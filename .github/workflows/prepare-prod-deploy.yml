@@ -50,4 +50,12 @@ jobs:
       ref: ${{ github.event.inputs.ref }}
       version: v${{ needs.prepare-deploy.steps.vars.outputs.release_name }}
     secrets: inherit
+  publish-release:
+    name: Publish draft release
+    needs: call-deploy-prod-workflow
+    runs-on: ubuntu-latest
+    if: needs.call-deploy-prod-workflow.steps.should_create_release.outputs.should_create == 'true' && needs.call-deploy-prod-workflow.result == 'success'
+    steps:
+      - name: Checkout
+      run: gh release edit v${{ steps.vars.outputs.release_name }} --draft=false
 
