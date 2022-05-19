@@ -27,11 +27,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           script: |
-            const release = await gh release view v${{ steps.vars.outputs.release_name }} --json id
-            if (release == 'release not found') {
-              console.log("::set-output name=should_create::true");
+            const  { releaseId }  = "$(gh release view v${{ steps.vars.outputs.release_name }} --json id)";
+            if (releaseId) {
+              console.log('Release already exists. Skipping creation');
             } else {
-              console.log('Release already exists. Skipping creation')
+              console.log("::set-output name=should_create::true");
             }
       - name: Prepare release notes
         if: steps.should_create_release.outputs.should_create == 'true'
