@@ -6,7 +6,7 @@ on:
       - completed
 
 jobs:
-  generate-github-release:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,7 +28,7 @@ jobs:
           token: "${{ github.token }}"
           state: "success"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-  - name: Update deployment status (failure)
+      - name: Update deployment status (failure)
         if: failure()
         uses: chrnorm/deployment-status@releases/v1
         with:
