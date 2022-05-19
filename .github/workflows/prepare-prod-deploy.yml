@@ -1,5 +1,4 @@
-name: Prepare Deploy
-concurrency: prepare-deploy
+name: Prepare Prod Deploy
 on:
   workflow_dispatch:
     inputs:

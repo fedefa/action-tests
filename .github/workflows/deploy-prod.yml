@@ -1,9 +1,10 @@
 name: Deploy to PROD
 on:
   workflow_run:
-    workflows: [Prepare Deploy]
+    workflows: [Prepare Prod Deploy]
     types:
       - completed
+
 jobs:
   generate-github-release:
     runs-on: ubuntu-latest
