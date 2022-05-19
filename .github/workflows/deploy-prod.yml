@@ -22,7 +22,7 @@ jobs:
         with:
           token: "${{ github.token }}"
           environment: prod
-          ref: ${{ inputs.ref }
+          ref: ${{ inputs.ref }}
           description: "Version: ${{ inputs.version }}"
       - name: Build
         run: |
