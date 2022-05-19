@@ -43,7 +43,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   call-deploy-prod-workflow:
-    uses: ./deploy-prod.yml
+    uses: ./deploy-prod.yml@main
     needs: prepare-deploy
     if: needs.prepare-deploy.result == 'success'
     with:
