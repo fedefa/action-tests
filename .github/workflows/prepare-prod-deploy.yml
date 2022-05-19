@@ -53,7 +53,7 @@ jobs:
     name: Publish draft release
     needs: [prepare-deploy, call-deploy-prod-workflow]
     runs-on: ubuntu-latest
-    if: needs.call-deploy-prod-workflow.steps.should_create_release.outputs.should_create == 'true' && needs.call-deploy-prod-workflow.result == 'success'
+    if: needs.call-deploy-prod-workflow.steps.should_create_release.outputs.should_create == 'true'
     steps:
       - name: Checkout
         run: gh release edit v${{ steps.vars.outputs.release_name }} --draft=false
