@@ -1,5 +1,5 @@
-name: Prepare Release
-concurrency: prepare-release
+name: Prepare deploy
+concurrency: prepare-deploy
 on:
   workflow_dispatch:
     inputs:
@@ -9,8 +9,8 @@ on:
         default: main
         type: string
 jobs:
-  generate-github-release:
-    name: Generate Github Release
+  prepare-deploy:
+    name: Prepare gh deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,8 +40,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create release
-          if: steps.should_create_release.outputs.should_create == 'true'
-          run: gh release create v${{ steps.vars.outputs.release_name }} --title ${{ steps.vars.outputs.release_name }} --target $GITHUB_SHA --generate-notes --draft
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.should_create_release.outputs.should_create == 'true'
+        run: gh release create v${{ steps.vars.outputs.release_name }} --title ${{ steps.vars.outputs.release_name }} --target $GITHUB_SHA --generate-notes --draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
