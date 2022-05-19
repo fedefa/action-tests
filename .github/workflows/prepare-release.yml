@@ -1,0 +1,47 @@
+name: Prepare Release
+concurrency: prepare-release
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        required: true
+        description: Target GIT ref to release
+        default: main
+        type: string
+jobs:
+  generate-github-release:
+    name: Generate Github Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.ref }}
+      - name: Set vars
+        id: vars
+        run: |
+          echo ::set-output name=release_name::$(git show -s --date=format:'%y.%m.%d-%H.%M.%S' --format=%cd)
+      - name: Check if we should create a release
+        id: should_create_release
+        uses: actions/github-script@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const release = gh release view v${{ steps.vars.outputs.release_name }} --json id
+            if (release === "release not found") {
+              console.log("::set-output name=should_create::true");
+            } else {
+              console.log('Release already exists. Skipping creation')
+            }
+      - name: Prepare release notes
+        if: steps.should_create_release.outputs.should_create == 'true'
+        run: gh release create v${{ steps.vars.outputs.release_name }} --title ${{ steps.vars.outputs.release_name }} --target $GITHUB_SHA --generate-notes --draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create release
+          if: steps.should_create_release.outputs.should_create == 'true'
+          run: gh release create v${{ steps.vars.outputs.release_name }} --title ${{ steps.vars.outputs.release_name }} --target $GITHUB_SHA --generate-notes --draft
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
