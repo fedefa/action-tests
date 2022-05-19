@@ -22,14 +22,11 @@ jobs:
           echo ::set-output name=release_name::$(git show -s --date=format:'%y.%m.%d-%H.%M.%S' --format=%cd)
       - name: Check if we should create a release
         id: should_create_release
-        uses: actions/github-script@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const response = gh release view
-            console.log(response)
             if (response) {
               console.log(`Release ${release} already exists. Skipping...`)
             } else {
