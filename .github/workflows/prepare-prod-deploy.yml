@@ -32,7 +32,7 @@ jobs:
             if (response) {
               console.log(`Release ${release} already exists. Skipping...`)
             } else {
-              console.log(`Creating release ${id}`)
+              console.log(`Creating release ${response}`)
               console.log("::set-output name=should_create::true")
             }
       - name: Prepare release notes
