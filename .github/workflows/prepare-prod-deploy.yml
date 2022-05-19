@@ -25,8 +25,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          {id}=$(gh release view v${{ steps.vars.outputs.release_name }} --json 'id')
-          echo $id
+          response=$(gh release view v${{ steps.vars.outputs.release_name }} --json 'id')
+          if [[ response == *"not found"* ]]; then
+             echo "Creating release v${{ steps.vars.outputs.release_name }}"
+             echo "::set-output name=should_create::true"
+          else
+            echo "Release v${{ steps.vars.outputs.release_name }} already exists"
+          fi
       - name: Prepare release notes
         if: steps.should_create_release.outputs.should_create == 'true'
         run: gh release create v${{ steps.vars.outputs.release_name }} --title ${{ steps.vars.outputs.release_name }} --target $GITHUB_SHA --generate-notes --draft
