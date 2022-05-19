@@ -42,4 +42,11 @@ jobs:
         run: gh release create v${{ steps.vars.outputs.release_name }} --title ${{ steps.vars.outputs.release_name }} --target $GITHUB_SHA --generate-notes --draft
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  call-deploy-prod-workflow:
+    uses: ./deploy-prod.yml
+    needs: prepare-deploy
+    if: needs.prepare-deploy.result == 'success'
+    with:
+      username: mona
+    secrets: inherit
 

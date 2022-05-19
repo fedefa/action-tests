@@ -1,9 +1,6 @@
 name: Deploy to PROD
 on:
-  workflow_run:
-    workflows: [Prepare Prod Deploy]
-    types:
-      - completed
+  workflow_dispatch:
 
 jobs:
   deploy:
