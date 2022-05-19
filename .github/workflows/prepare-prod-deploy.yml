@@ -1,4 +1,4 @@
-name: Prepare deploy
+name: Prepare Deploy
 concurrency: prepare-deploy
 on:
   workflow_dispatch:
