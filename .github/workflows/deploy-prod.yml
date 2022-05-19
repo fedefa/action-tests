@@ -1,7 +1,13 @@
 name: Deploy to PROD
 on:
   workflow_call:
-
+    inputs:
+      ref:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -14,7 +20,7 @@ jobs:
         with:
           token: "${{ github.token }}"
           environment: prod
-          description: "${{ github.event.release.name }}"
+          description: "${{ inputs.ref }} - ${{ inputs.version }}"
       - name: Build
         run: |
           echo "Building..."

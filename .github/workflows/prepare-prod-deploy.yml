@@ -47,6 +47,7 @@ jobs:
     needs: prepare-deploy
     if: needs.prepare-deploy.result == 'success'
     with:
-      username: mona
+      ref: ${{ github.event.inputs.ref }}
+      version: v${{ needs.prepare-deploy.steps.vars.outputs.release_name }}
     secrets: inherit
 
