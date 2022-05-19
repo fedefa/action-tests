@@ -1,6 +1,6 @@
 name: Deploy to PROD
 on:
-  workflow_dispatch:
+  workflow_call:
 
 jobs:
   deploy:
