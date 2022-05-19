@@ -24,9 +24,9 @@ jobs:
         id: should_create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          script: |
-            const response = gh release view
+        - run: |
+            const response = ${gh release view}
+            console.log(response)
             if (response) {
               console.log(`Release ${release} already exists. Skipping...`)
             } else {
