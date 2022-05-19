@@ -27,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           script: |
-            response = gh release view v${{ steps.vars.outputs.release_name }} --json id
+            response = gh release view v${{ steps.vars.outputs.release_name }} --json 'id'
             console.log(response)
             if (id) {
               console.log(`Release ${release} already exists. Skipping...`)
