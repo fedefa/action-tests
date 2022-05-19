@@ -29,9 +29,9 @@ jobs:
           script: |
             const  { id }  = "$(gh release view v${{ steps.vars.outputs.release_name }} --json id)";
             if (id) {
-              console.log(`Release ${{ steps.vars.outputs.release_name }} already exists. Skipping...`);
+              console.log(`Release ${id} already exists. Skipping...`);
             } else {
-              console.log(`Creating release ${{ steps.vars.outputs.release_name }}`);
+              console.log(`Creating release ${id}`);
               console.log("::set-output name=should_create::true");
             }
       - name: Prepare release notes
