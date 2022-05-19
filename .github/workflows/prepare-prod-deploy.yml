@@ -25,8 +25,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          response=$(gh release view v${{ steps.vars.outputs.release_name }} --json 'id')
-          echo $response
+          {id}=$(gh release view v${{ steps.vars.outputs.release_name }} --json 'id')
+          echo $id
       - name: Prepare release notes
         if: steps.should_create_release.outputs.should_create == 'true'
         run: gh release create v${{ steps.vars.outputs.release_name }} --title ${{ steps.vars.outputs.release_name }} --target $GITHUB_SHA --generate-notes --draft
