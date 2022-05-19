@@ -26,6 +26,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const response = gh release view
             console.log(response)
