@@ -40,7 +40,7 @@ jobs:
   call-deploy-prod-workflow:
     uses: ./.github/workflows/deploy-prod.yml
     needs: prepare-deploy
-    if: needs.prepare-deploy.steps.should_create_release.outputs.should_create =='false'
+    if: needs.prepare-deploy.outputs.should_create =='false'
     with:
       ref: v${{ needs.prepare-deploy.steps.vars.outputs.release_name }}
     secrets: inherit
