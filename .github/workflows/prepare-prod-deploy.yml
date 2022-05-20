@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       should_create_deploy: ${{steps.should_create_release.outputs.should_create_deploy}}
+      release_name: ${{steps.vars.outputs.release_name}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
