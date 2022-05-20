@@ -11,6 +11,8 @@ jobs:
   prepare-deploy:
     name: Prepare deploy
     runs-on: ubuntu-latest
+    outputs:
+      should_create_deploy: ${{steps.should_create_release.outputs.should_create_deploy}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -27,7 +29,7 @@ jobs:
         run: |
           if gh release view v${{ steps.vars.outputs.release_name }} --json 'id' 2>/dev/null ; then
             echo "Release v${{ steps.vars.outputs.release_name }} already exists"
-            echo "::set-output name=should_create::false"
+            echo "::set-output name=should_create_deploy::true"
           else
             echo "Creating release v${{ steps.vars.outputs.release_name }}"
             echo "::set-output name=should_create::true"
@@ -40,7 +42,7 @@ jobs:
   call-deploy-prod-workflow:
     uses: ./.github/workflows/deploy-prod.yml
     needs: prepare-deploy
-    if: needs.prepare-deploy.steps.should_create_release.outputs.should_create == 'false'
+    if: needs.prepare-deploy.outputs.should_create_deploy == 'true'
     with:
       ref: v${{ needs.prepare-deploy.outputs.release_name }}
     secrets: inherit
