@@ -4,12 +4,12 @@ on:
     inputs:
       ref:
         required: true
-        description: Target GIT ref to release
+        description: Target GIT ref to deploy
         default: main
         type: string
 jobs:
   prepare-deploy:
-    name: Prepare gh deploy
+    name: Prepare deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,16 +27,12 @@ jobs:
         run: |
           if $(gh release view v${{ steps.vars.outputs.release_name }} --json 'id') 2>/dev/null ; then
             echo "Release v${{ steps.vars.outputs.release_name }} already exists"
+            echo "::set-output name=should_create::false"
           else
             echo "Creating release v${{ steps.vars.outputs.release_name }}"
-             echo "::set-output name=should_create::true"
+            echo "::set-output name=should_create::true"
           fi
-      - name: Prepare release notes
-        if: steps.should_create_release.outputs.should_create == 'true'
-        run: gh release create v${{ steps.vars.outputs.release_name }} --title ${{ steps.vars.outputs.release_name }} --target $GITHUB_SHA --generate-notes --draft
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create release
+      - name: Create draft release
         if: steps.should_create_release.outputs.should_create == 'true'
         run: gh release create v${{ steps.vars.outputs.release_name }} --title ${{ steps.vars.outputs.release_name }} --target $GITHUB_SHA --generate-notes --draft
         env:
@@ -44,17 +40,8 @@ jobs:
   call-deploy-prod-workflow:
     uses: ./.github/workflows/deploy-prod.yml
     needs: prepare-deploy
-    if: needs.prepare-deploy.result == 'success'
+    if: needs.prepare-deploy.result == 'success' && needs.prepare-deploy.should_create=='false'
     with:
-      ref: ${{ github.event.inputs.ref }}
-      version: v${{ needs.prepare-deploy.steps.vars.outputs.release_name }}
+      ref: v${{ needs.prepare-deploy.steps.vars.outputs.release_name }}
     secrets: inherit
-  publish-release:
-    name: Publish draft release
-    needs: [prepare-deploy, call-deploy-prod-workflow]
-    runs-on: ubuntu-latest
-    if: needs.call-deploy-prod-workflow.steps.should_create_release.outputs.should_create == 'true'
-    steps:
-      - name: Checkout
-        run: gh release edit v${{ steps.vars.outputs.release_name }} --draft=false
 

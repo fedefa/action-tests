@@ -5,9 +5,9 @@ on:
       ref:
         required: true
         type: string
-      version:
-        required: true
-        type: string
+  release:
+    types: [published]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -23,7 +23,7 @@ jobs:
           token: "${{ github.token }}"
           environment: prod
           ref: ${{ inputs.ref }}
-          description: "Version: ${{ inputs.version }}"
+          description: "Release: ${{ inputs.ref }}"
       - name: Build
         run: |
           echo "Building..."
